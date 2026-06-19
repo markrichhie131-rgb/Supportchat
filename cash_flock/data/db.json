@@ -1,0 +1,159 @@
+{
+  "conversations": {
+    "customer_1781762820958_1565": {
+      "id": "customer_1781762820958_1565",
+      "name": "jerry",
+      "email": "jerrytom123",
+      "unread": 0,
+      "messages": [
+        {
+          "id": "1781763683899",
+          "sender": "customer",
+          "text": "ewfew",
+          "image": null,
+          "read": true,
+          "time": "07:21 AM"
+        },
+        {
+          "id": "1781763698297",
+          "sender": "customer",
+          "text": "ewf",
+          "image": null,
+          "read": true,
+          "time": "07:21 AM"
+        },
+        {
+          "id": "1781763730805",
+          "sender": "customer",
+          "text": "fwefefwefefeewfefefwfwethethye",
+          "image": null,
+          "read": true,
+          "time": "07:22 AM"
+        },
+        {
+          "id": "1781763735934",
+          "sender": "support",
+          "text": "fewffefwfwf",
+          "image": null,
+          "read": true,
+          "time": "07:22 AM"
+        },
+        {
+          "id": "1781765953836",
+          "sender": "customer",
+          "text": "rehhehther",
+          "image": null,
+          "read": true,
+          "time": "07:59 AM"
+        },
+        {
+          "id": "1781765989654",
+          "sender": "support",
+          "text": "ege",
+          "image": null,
+          "read": true,
+          "time": "07:59 AM"
+        },
+        {
+          "id": "1781765993924",
+          "sender": "customer",
+          "text": "ewgeg",
+          "image": null,
+          "read": true,
+          "time": "07:59 AM"
+        },
+        {
+          "id": "1781767273814",
+          "sender": "customer",
+          "text": "jeifbgqweg",
+          "image": null,
+          "read": true,
+          "time": "08:21 AM"
+        },
+        {
+          "id": "1781767284647",
+          "sender": "support",
+          "text": "egqeg",
+          "image": null,
+          "read": true,
+          "time": "08:21 AM"
+        },
+        {
+          "id": "1781767289037",
+          "sender": "customer",
+          "text": "wegqe",
+          "image": null,
+          "read": true,
+          "time": "08:21 AM"
+        },
+        {
+          "id": "1781767294269",
+          "sender": "customer",
+          "text": "geqegq",
+          "image": null,
+          "read": true,
+          "time": "08:21 AM"
+        }
+      ],
+      "updatedAt": "2026-06-18T07:21:34.269Z"
+    },
+    "customer_1781763766060_447": {
+      "id": "customer_1781763766060_447",
+      "name": "mark",
+      "email": "diqwvdiqwv",
+      "unread": 0,
+      "messages": [
+        {
+          "id": "welcome_1781763779576",
+          "sender": "support",
+          "text": "Welcome to Bash-app Support, mark. How can we help you today? Please describe your issue clearly.",
+          "image": null,
+          "read": true,
+          "time": "07:22 AM"
+        },
+        {
+          "id": "1781763803509",
+          "sender": "customer",
+          "text": "okayshwd",
+          "image": null,
+          "read": true,
+          "time": "07:23 AM"
+        },
+        {
+          "id": "1781763816311",
+          "sender": "customer",
+          "text": "cqec",
+          "image": null,
+          "read": true,
+          "time": "07:23 AM"
+        },
+        {
+          "id": "1781763868454",
+          "sender": "support",
+          "text": "fcewffw",
+          "image": null,
+          "read": true,
+          "time": "07:24 AM"
+        },
+        {
+          "id": "1781763877205",
+          "sender": "customer",
+          "text": "gorge",
+          "image": null,
+          "read": true,
+          "time": "07:24 AM"
+        }
+      ],
+      "updatedAt": "2026-06-18T06:24:37.206Z"
+    },
+    "customer_1781763842548_6289": {
+      "id": "customer_1781763842548_6289",
+      "name": "Guest",
+      "email": "",
+      "unread": 0,
+      "messages": [],
+      "updatedAt": "2026-06-18T06:24:02.548Z"
+    }
+  },
+  "adminOnline": true
+}
