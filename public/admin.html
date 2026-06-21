@@ -6,33 +6,18 @@
   <title>Bashapp Admin Dashboard</title>
   <script src="/socket.io/socket.io.js"></script>
   <style>
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: -apple-system, sans-serif; 
-      -webkit-tap-highlight-color: transparent; 
-    }
-    body { 
-      display: flex; 
-      height: 100vh; 
-      width: 100vw;
-      background: #f0f2f5; 
-      color: #333; 
-      overscroll-behavior: none; 
-      overflow: hidden; /* Lock screen */
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { display: flex; height: 100vh; width: 100vw; background: #f0f2f5; color: #333; overscroll-behavior: none; overflow: hidden; }
     
     #loginScreen {
       position: fixed; top:0; left:0; width:100vw; height:100vh; background:#f0f2f5;
       display:flex; justify-content:center; align-items:center; z-index:999;
     }
     .login-card { background:white; padding:30px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.1); width:320px; text-align:center;}
-    .login-card h2 { margin-bottom:15px; font-size:20px; }
     .login-card input { width:100%; height:40px; margin-bottom:12px; padding:0 10px; border:1px solid #ddd; border-radius:6px; outline:none; }
     .login-card button { width:100%; height:40px; background:#16c516; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
 
-    .sidebar { width: 320px; background: white; border-right: 1px solid #e0e0e0; display: flex; flex-direction: column; }
+    .sidebar { width: 320px; flex-shrink: 0; background: white; border-right: 1px solid #e0e0e0; display: flex; flex-direction: column; }
     .sidebar-header { padding: 16px; border-bottom: 1px solid #e0e0e0; font-weight: bold; font-size: 18px; }
     .convo-list { flex: 1; overflow-y: auto; }
     
@@ -47,23 +32,18 @@
     .convo-preview { font-size: 12px; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
     .badge { background: #16c516; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
     
-    .delete-convo-btn {
-      background: none; border: none; color: #ff3b30; font-size: 16px; cursor: pointer; padding: 4px; display: none;
-    }
+    .delete-convo-btn { background: none; border: none; color: #ff3b30; font-size: 16px; cursor: pointer; padding: 4px; display: none; }
     .convo-item:hover .delete-convo-btn { display: block; }
 
-    .main-chat { flex: 1; display: flex; flex-direction: column; background: #f7f9fa; }
+    .main-chat { flex: 1; min-width: 0; display: flex; flex-direction: column; background: #f7f9fa; }
     .chat-header { background: white; padding: 16px; border-bottom: 1px solid #e0e0e0; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
     .messages-view { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-    
     .msg { max-width: 65%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.4; }
     .msg.customer { background: white; border: 1px solid #e0e0e0; align-self: flex-start; }
     .msg.support { background: #16c516; color: white; align-self: flex-end; }
     .msg img { max-width: 100%; border-radius: 8px; margin-bottom: 4px; display: block; }
     .msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
-
     .typing-indicator { padding: 6px 20px; font-size: 12px; font-style: italic; color: #666; min-height: 24px; }
-
     .input-bar { padding: 16px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; align-items: center; }
     .input-bar input[type="text"] { flex: 1; height: 40px; border: 1px solid #ddd; border-radius: 6px; padding: 0 12px; outline: none; }
     .media-btn { background: #f0f0f0; border: none; width: 40px; height: 40px; border-radius: 6px; cursor: pointer; font-size: 16px; }
@@ -71,26 +51,12 @@
   </style>
 </head>
 <body>
-  <div id="loginScreen">
-    <div class="login-card">
-      <h2>Bashapp Backoffice</h2>
-      <input type="password" id="passInput" placeholder="Enter System Password" />
-      <button id="loginBtn">Authenticate</button>
-    </div>
-  </div>
-
-  <div class="sidebar">
-    <div class="sidebar-header">Conversations</div>
-    <div class="convo-list" id="convoList"></div>
-  </div>
-
+  <div id="loginScreen"><div class="login-card"><h2>Bashapp Backoffice</h2><input type="password" id="passInput" placeholder="Enter System Password" /><button id="loginBtn">Authenticate</button></div></div>
+  <div class="sidebar"><div class="sidebar-header">Conversations</div><div class="convo-list" id="convoList"></div></div>
   <div class="main-chat">
-    <div class="chat-header">
-      <span id="activeChatTitle">Select a thread to begin</span>
-    </div>
+    <div class="chat-header"><span id="activeChatTitle">Select a thread to begin</span></div>
     <div class="messages-view" id="messagesView"></div>
     <div class="typing-indicator" id="adminTypingTicker"></div>
-    
     <form class="input-bar" id="adminForm" style="visibility: hidden;">
       <input type="file" id="adminFileInput" accept="image/*" style="display: none;" />
       <button type="button" class="media-btn" id="adminPaperclipBtn">📎</button>
@@ -98,15 +64,34 @@
       <button type="submit">Reply</button>
     </form>
   </div>
-
   <script>
-    // [Script logic remains largely the same, ensure the delete logic is solid]
     const socket = io();
     let selectedCustomerId = null;
-    // ... (rest of your existing logic)
-
-    // Ensure the delete button emits to the server correctly
-    // The server needs to listen for: socket.on("delete-conversation", (id) => { ... })
+    document.getElementById("loginBtn").addEventListener("click", () => socket.emit("admin-login", document.getElementById("passInput").value));
+    socket.on("admin-login-success", (c) => { document.getElementById("loginScreen").style.display = "none"; renderSidebar(c); });
+    socket.on("conversations", renderSidebar);
+    function renderSidebar(conversations) {
+      const list = document.getElementById("convoList"); list.innerHTML = "";
+      for (const id in conversations) {
+        const convo = conversations[id];
+        const item = document.createElement("div");
+        item.className = "convo-item" + (id === selectedCustomerId ? " active" : "");
+        item.onclick = () => selectThread(id);
+        const meta = document.createElement("div"); meta.className = "convo-meta";
+        meta.innerHTML = `<div class="convo-name">${convo.name} (${convo.email || "Guest"})</div><div class="convo-preview">${convo.messages[convo.messages.length - 1]?.text || "No messages"}</div>`;
+        item.appendChild(meta);
+        if (convo.unread > 0) item.innerHTML += `<span class="badge">${convo.unread}</span>`;
+        const delBtn = document.createElement("button"); delBtn.className = "delete-convo-btn"; delBtn.innerHTML = "🗑️";
+        delBtn.onclick = (e) => { e.stopPropagation(); if (confirm("Delete profile?")) socket.emit("delete-conversation", id); };
+        item.appendChild(delBtn);
+        list.appendChild(item);
+      }
+    }
+    function selectThread(id) { selectedCustomerId = id; document.getElementById("adminForm").style.visibility = "visible"; socket.emit("select-customer-thread", id); }
+    socket.on("thread-data", (convo) => { document.getElementById("activeChatTitle").textContent = convo.name; renderMessages(convo.messages); });
+    socket.on("customer-message-received", (d) => { if (d.customerId === selectedCustomerId) renderMessages(d.conversation.messages); });
+    function renderMessages(m) { const v = document.getElementById("messagesView"); v.innerHTML = ""; m.forEach(msg => { v.innerHTML += `<div class="msg ${msg.sender}">${msg.image ? `<img src="${msg.image}">` : ""}${msg.text}</div>`; }); v.scrollTop = v.scrollHeight; }
+    // Add existing input listeners here...
   </script>
 </body>
 </html>
