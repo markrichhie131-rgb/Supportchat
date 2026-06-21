@@ -96,6 +96,7 @@ async function sendTelegram(text) {
 
 app.use(express.static("public"));
 
+// ADDED ADMIN ROUTE
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
@@ -108,15 +109,6 @@ app.get("/conversation/:customerId", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  // FULL PROFILE DELETION HANDLER
-  socket.on("delete-conversation", (customerId) => {
-    if (db.conversations[customerId]) {
-      delete db.conversations[customerId];
-      saveDb();
-      io.to("admin").emit("conversations", getLightweightConversations());
-    }
-  });
-
   socket.on("customer-start", ({ customerId }) => {
     const id = customerId || createCustomerId();
     socket.customerId = id;
