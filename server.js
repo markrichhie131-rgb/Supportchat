@@ -108,7 +108,7 @@ app.get("/conversation/:customerId", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  // New Deletion Handler
+  // FULL PROFILE DELETION HANDLER
   socket.on("delete-conversation", (customerId) => {
     if (db.conversations[customerId]) {
       delete db.conversations[customerId];
