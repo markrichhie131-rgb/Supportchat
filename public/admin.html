@@ -2,11 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Bashapp Admin Dashboard</title>
   <script src="/socket.io/socket.io.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
-    body { display: flex; height: 100vh; background: #f0f2f5; color: #333; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: -apple-system, sans-serif; 
+      -webkit-tap-highlight-color: transparent; 
+    }
+    body { 
+      display: flex; 
+      height: 100vh; 
+      background: #f0f2f5; 
+      color: #333; 
+      overscroll-behavior: none; 
+    }
     
     #loginScreen {
       position: fixed; top:0; left:0; width:100vw; height:100vh; background:#f0f2f5;
@@ -32,7 +45,6 @@
     .convo-preview { font-size: 12px; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
     .badge { background: #16c516; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
     
-    /* DYNAMIC DELETION TARGET HOOK */
     .delete-convo-btn {
       background: none; border: none; color: #ff3b30; font-size: 16px; cursor: pointer; padding: 4px; display: none;
     }
@@ -57,7 +69,6 @@
   </style>
 </head>
 <body>
-
   <div id="loginScreen">
     <div class="login-card">
       <h2>Bashapp Backoffice</h2>
@@ -137,12 +148,11 @@
           item.appendChild(badge);
         }
 
-        // PURGE THREAD DELETE COMPONENT
         const delBtn = document.createElement("button");
         delBtn.className = "delete-convo-btn";
         delBtn.innerHTML = "🗑️";
         delBtn.onclick = (e) => {
-          e.stopPropagation(); // Prevent opening thread on delete tap
+          e.stopPropagation(); 
           if (confirm("Are you sure you want to completely erase this user conversation thread data profile?")) {
             socket.emit("delete-conversation", id);
             if (selectedCustomerId === id) {
@@ -190,7 +200,6 @@
       }
     });
 
-    // ADMIN OUTPUT TRANSMISSION LISTENER HANGER
     const adminInput = document.getElementById("adminInput");
     adminInput.addEventListener("input", () => {
       if (!selectedCustomerId) return;
