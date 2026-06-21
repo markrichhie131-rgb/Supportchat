@@ -16,16 +16,20 @@
 
     .sidebar { width: 320px; flex-shrink: 0; background: white; border-right: 1px solid #e0e0e0; display: flex; flex-direction: column; }
     .convo-list { flex: 1; overflow-y: auto; }
-    
     .convo-item { padding: 14px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-    .convo-item.active { background: #e6f7e6; }
-    .delete-convo-btn { background: none; border: none; color: #ff3b30; font-size: 16px; cursor: pointer; display: none; }
-    .convo-item:hover .delete-convo-btn { display: block; }
+    
+    .main-chat { flex: 1; display: none; flex-direction: column; background: #f7f9fa; min-width: 0; }
+    @media (min-width: 601px) { .main-chat { display: flex; } }
+    body.chat-active .sidebar { display: none; }
+    body.chat-active .main-chat { display: flex; }
 
-    .main-chat { flex: 1; min-width: 0; display: flex; flex-direction: column; background: #f7f9fa; }
+    .chat-header { background: white; padding: 16px; border-bottom: 1px solid #e0e0e0; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+    #backBtn { cursor: pointer; font-size: 20px; display: none; }
+    @media (max-width: 600px) { body.chat-active #backBtn { display: block; } }
+
     .messages-view { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
     .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 14px; }
-    .msg.customer { background: white; align-self: flex-start; border: 1px solid #ddd; }
+    .msg.customer { background: white; border: 1px solid #ddd; align-self: flex-start; }
     .msg.support { background: #16c516; color: white; align-self: flex-end; }
     .input-bar { padding: 16px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; }
     .input-bar input { flex: 1; height: 40px; border: 1px solid #ddd; border-radius: 6px; padding: 0 12px; }
@@ -33,9 +37,9 @@
 </head>
 <body>
   <div id="loginScreen"><div class="login-card"><h2>Admin</h2><input type="password" id="passInput" /><button id="loginBtn">Login</button></div></div>
-  <div class="sidebar"><div class="convo-list" id="convoList"></div></div>
+  <div class="sidebar"><div class="sidebar-header">Conversations</div><div class="convo-list" id="convoList"></div></div>
   <div class="main-chat">
-    <div class="chat-header" style="padding: 15px; border-bottom: 1px solid #ddd;"><span id="activeChatTitle">Select a thread</span></div>
+    <div class="chat-header"><span id="backBtn" onclick="goBack()">←</span><span id="activeChatTitle">Select a thread</span></div>
     <div class="messages-view" id="messagesView"></div>
     <form class="input-bar" id="adminForm" style="visibility: hidden;">
       <input type="text" id="adminInput" placeholder="Reply..." />
@@ -45,42 +49,24 @@
   <script>
     const socket = io();
     let selectedCustomerId = null;
+    function goBack() { document.body.classList.remove('chat-active'); selectedCustomerId = null; }
     document.getElementById("loginBtn").onclick = () => socket.emit("admin-login", document.getElementById("passInput").value);
     socket.on("admin-login-success", (c) => { document.getElementById("loginScreen").style.display = "none"; renderSidebar(c); });
     socket.on("conversations", renderSidebar);
-
     function renderSidebar(conversations) {
       const list = document.getElementById("convoList"); list.innerHTML = "";
       for (const id in conversations) {
         const convo = conversations[id];
         const item = document.createElement("div");
-        item.className = "convo-item " + (id === selectedCustomerId ? "active" : "");
-        item.innerHTML = `<div><strong>${convo.name}</strong></div>`;
-        item.onclick = () => { selectedCustomerId = id; document.getElementById("adminForm").style.visibility = "visible"; socket.emit("select-customer-thread", id); };
-        const del = document.createElement("button"); del.className = "delete-convo-btn"; del.innerHTML = "🗑️";
-        del.onclick = (e) => { e.stopPropagation(); if(confirm("Delete profile?")) socket.emit("delete-conversation", id); };
-        item.appendChild(del);
+        item.className = "convo-item";
+        item.onclick = () => { selectedCustomerId = id; document.body.classList.add('chat-active'); document.getElementById("adminForm").style.visibility = "visible"; socket.emit("select-customer-thread", id); };
+        item.innerHTML = `<div><strong>${convo.name}</strong></div><button onclick="event.stopPropagation(); if(confirm('Delete profile?')) socket.emit('delete-conversation', '${id}');">🗑️</button>`;
         list.appendChild(item);
       }
     }
-
-    socket.on("thread-data", (convo) => { renderMessages(convo.messages); });
-    function renderMessages(messages) {
-      const v = document.getElementById("messagesView"); v.innerHTML = "";
-      messages.forEach(m => {
-        v.innerHTML += `<div class="msg ${m.sender}">${m.text}</div>`;
-      });
-      v.scrollTop = v.scrollHeight;
-    }
-
-    document.getElementById("adminForm").onsubmit = (e) => {
-      e.preventDefault();
-      const text = document.getElementById("adminInput").value;
-      if (text && selectedCustomerId) {
-        socket.emit("admin-message", { customerId: selectedCustomerId, text, image: null });
-        document.getElementById("adminInput").value = "";
-      }
-    };
+    socket.on("thread-data", (convo) => { document.getElementById("activeChatTitle").textContent = convo.name; renderMessages(convo.messages); });
+    function renderMessages(m) { const v = document.getElementById("messagesView"); v.innerHTML = ""; m.forEach(msg => v.innerHTML += `<div class="msg ${msg.sender}">${msg.text}</div>`); v.scrollTop = v.scrollHeight; }
+    document.getElementById("adminForm").onsubmit = (e) => { e.preventDefault(); socket.emit("admin-message", { customerId: selectedCustomerId, text: document.getElementById("adminInput").value, image: null }); document.getElementById("adminInput").value = ""; };
   </script>
 </body>
 </html>
